@@ -2,6 +2,11 @@
 
 The Goal is to build a functional CPU in minecraft that interprets an assembly code that I wrote called HummusLite. I chose to do this in minecraft cause why not. The name Hummus stuck because me and my friends watched [this video.](https://www.youtube.com/watch?v=_QdPW8JrYzQ) Since then, the name kinda stuck.
 
+#### TODO List
+- [ ] Add pictures to the README
+- [ ] Finish Program Counter
+- [ ] Figure out how to implement user input
+
 # System Registers
 ID | Name | Description
 ---|------|----------------
