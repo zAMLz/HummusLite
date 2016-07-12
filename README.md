@@ -27,15 +27,15 @@ OPCODE | ARGS | Instruction | Psuedo-Code | Description
 0011 | zxxx | BNR |  if(RS): PC = PC + 0bzzzz_zxxx | If result is not zero, add a two's compliment number to the Program Counter, else do nothing.
 0100 | yyyy | INP | B(2/1) = userInput() | If the ARGS are non-zero, get user input and store it in register B2, else store it in register B1.
 0101 | yyyy | STR | B(2/1) = RS | If the ARGS are non-zero, store the value of register RS into B2, else store it in B1.
-0110 | mmmm | LDB1 | B1 = Memory[0bmmmm] | Take byte from location 0bmmmm in memory and store it into register B1.
-0111 | mmmm | LDB2 | B2 = Memory[0bmmmm] | Take byte from location 0bmmmm in memory and store it into register B2.
+0110 | mmmm | LDB1 | B1 = Mem[0bmmmm] | Take byte from location 0bmmmm in memory and store it into register B1.
+0111 | mmmm | LDB2 | B2 = Mem[0bmmmm] | Take byte from location 0bmmmm in memory and store it into register B2.
 1000 | xxxx | ADDB1 | RS = B1 + 0bxxxx | Add 0bxxxx to the value in B1 and store it in RS.
 1001 | xxxx | ADDB2 | RS = B2 + 0bxxxx | Add 0bxxxx to the value in B2 and store it in RS.
 1010 | cccc | BOOL | RS = Bool(0bcccc) | The behaviour of Bool is described below.
 1011 | --cc | ADD | RS = Add(0b00cc) | The behaviour of Add is described below.
 1100 | xxxx | SUBB1 | RS = B1 - 0bxxxx | Subtract 0bxxxx from the value in register B1 and store it in RS.
 1101 | xxxx | SUBB2 | RS = B2 - 0bxxxx | Subtract 0bxxxx from the value in register B2 and store it in RS.
-1110 | mmmm | STM | Memory[0bmmmm] = RS | Store result into location 0bmmmm in memory.
+1110 | mmmm | STM | Mem[0bmmmm] = RS | Store result into location 0bmmmm in memory.
 1111 | ---- | MEMC | memoryClear() | Clear the Main Memory.
 
 #### Behaviour of BOOL
