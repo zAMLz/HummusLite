@@ -4,7 +4,7 @@ The Goal is to build a functional CPU in minecraft that interprets an assembly c
 
 #### TODO List
 - [ ] Add pictures to the README
-- [ ] Finish Program Counter
+- [ ] Implement a system clock
 - [ ] Figure out how to implement user input
 
 # System Registers
@@ -35,7 +35,8 @@ OPCODE | ARGS | Instruction | Psuedo-Code | Description
 1011 | --cc | ADD | RS = Add(0b00cc) | The behaviour of Add is described below.
 1100 | xxxx | SUBB1 | RS = B1 - 0bxxxx | Subtract 0bxxxx from the value in register B1 and store it in RS.
 1101 | xxxx | SUBB2 | RS = B2 - 0bxxxx | Subtract 0bxxxx from the value in register B2 and store it in RS.
-1110 | mmmm | STM | memoryClear() | Clear the Main Memory.
+1110 | mmmm | STM | Memory[0bmmmm] = RS | Store result into location 0bmmmm in memory.
+1111 | ---- | MEMC | memoryClear() | Clear the Main Memory.
 
 #### Behaviour of BOOL
 The instruction BOOL performs a boolean or a logical operation based on the current value of ARGS. Hence it can do 16 different boolean operations. Here is the list.
