@@ -47,29 +47,21 @@ LABEL_TABLE = {}
 
 # function to generate label dictionary
 
-def createLabelTable(fileName):
-	try:
-		asmFile = open(fileName,'r')
-	
-	except IOError:
-		print("Cannot open file ",fileName)
-		exit(1)
-	
-	else:
-		curLine = -1	
-		for line in asmFile:
-			curLine += 1
-			try:
-				LABEL_TABLE[line.split()[2]] = curLine
+def createLabelTable():
+	vprint("\nGENERATE LABEL TABLE: \n")
+	curLine = -1	
+	for key in FILE_DATA:
+		curLine += 1
+		try:
+			LABEL_TABLE[FILE_DATA[key][2]] = curLine
 
-			except IndexError:
-				vprint("Line "+str(curLine)+": Label not found")
-				continue
+		except IndexError:
+			vprint("Line "+str(curLine)+": Label not found")
+			continue
 
-			else:
-				vprint("Line "+str(curLine)+": Label found ---> "+line.split()[2])
-				continue
-		asmFile.close()
+		else:
+			vprint("Line "+str(curLine)+": Label found ---> "+FILE_DATA[key][2])
+			continue
 
 
 # function to calculate offset of current line number
@@ -88,6 +80,30 @@ def labelOffset(label,linenum):
 # ----------------------------------------------------
 """
 
+# File data .
+# input file is read and processed into
+# a data structure.
+
+FILE_NAME = sys.argv[1]
+FILE_DATA = {}
+
+try:
+	vprint("\nPARSE INPUT FILE:\n")
+	humFile = open(FILE_NAME,'r')
+
+except IOError:
+	print("Cannot open file ",FILE_NAME)
+	exit(1)
+
+else:
+	curLine = 0
+	for line in humFile:
+		if(line[0] == "#"):
+			continue
+		FILE_DATA[curLine] = line.split()
+		vprint("Line "+str(curLine)+" ---> "+str(FILE_DATA[curLine]))
+		curLine += 1
+
 
 #	x	x	x	x	x	x	x	x	x	x	x	x	x	
 
@@ -104,29 +120,23 @@ def labelOffset(label,linenum):
 # 	Reads input from the file and 
 #	produces binary strings
 
-def asmCompile(fileName):
+def asmCompile():
 	
 	try:
-		asmFile = open(fileName,'r')
-		binFile = open(fileName+"_BIN",'w')
+		binFile = open(FILE_NAME+"_BIN",'w')
 	
 	except IOError:
-		print("Cannot open file ",fileName)
+		print("Unable to write to file ",FILE_NAME+"_BIN")
 		exit(1)
 	
 	else:
 		curLine = 0	
-		for line in asmFile:
+		for line in FILE_DATA:
 			
-			# if the line is a comment line
-			if(line[0] == "#"):
-				continue
-			
-			temp = decodeInstruction(line,curLine)
+			temp = decodeInstruction(FILE_DATA[line],curLine)
 			binFile.write(temp)
 			curLine += 1
 		
-		asmFile.close()
 		binFile.close()
 
 
@@ -136,25 +146,29 @@ def asmCompile(fileName):
 #	take an assembly instruction
 #	and convert into binary string
 
-def decodeInstruction(asmi, lineNum):
-	instruction = ""
-	
-	temp = asmi.split()
-	opcode = temp[0]
-	args = temp[1]
-	instruction = opcode+args+"\n"
+# argsType chart
+#		arg structure = value
+#	-------------------------------------
+#	 	---- = 0	\dtype
+#		xxxx = 1	\xtype
+#		zxxx = 2	\ztype
+#		yyyy = 3	\ytype
+#		mmmm = 3	\mtype
+#		cccc = 4	\ctype
 
+def decodeInstruction(asmi, lineNum):
+	instruction = asmi[0]
 	return instruction
 
 
 """
 # -----------------------------------------------------
 #
-# Main function
+# Main functions
 #
 # -------------------------------------------------------
 """
 
 
-createLabelTable(sys.argv[1])
-asmCompile(sys.argv[1])
+createLabelTable()
+asmCompile()

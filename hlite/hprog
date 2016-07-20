@@ -1,0 +1,59 @@
+#
+#	Creates the number 46 and stores it
+#	into val.
+#
+ADDB1	15
+STR		B1
+ADDB1	15
+STR		B1
+ADDB1	15
+STR		B1
+ADDB1	1
+STM		VAL
+#
+#	Creates the number 3 and stores it
+#	into count
+#
+ADDB2	3
+STR		B2
+STM		COUNT
+#
+#	reload val
+#	into b2
+#
+LDB2	VAL
+#
+#	Need to hardcode every bool option
+#	Need to hardcode every add option
+#
+#	---------------------------------
+#
+#	load current sum and update it
+#	and save current sum
+#
+LDB1	SUM		LOOPSTART
+ADD		B1+B2
+STM		SUM
+#
+#	load current count and update it
+#	 and save it
+#
+LDB1	COUNT
+SUBB1	1
+STM		COUNT
+#
+#	if result is not zero, update pc by 2
+#	else continue forward to end loop
+#
+BNR		2
+SHFF	LOOPEND
+SHFB	LOOPSTART
+#
+#	load current sum and load it into
+#	the result register to display
+#
+LDB1	SUM 	LOOPEND
+ADDB1	0
+HALT	0
+#
+#	Program should end with RS=184=0xB8
