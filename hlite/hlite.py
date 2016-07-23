@@ -49,12 +49,6 @@ HELP = False
 
 LABEL_TABLE = {}
 
-# Variable Table data structure
-# keeps track of what variables exist
-# and what their memory address is
-
-VAR_TABLE = {}
-
 # function to generate label dictionary
 
 def createLabelTable():
@@ -78,6 +72,12 @@ def createLabelTable():
 	vprint("*\n--------------------------------------------\n")
 
 
+	
+# Variable Table data structure
+# keeps track of what variables exist
+# and what their memory address is
+
+VAR_TABLE = {}
 
 # function to generate variable dictionary
 # Also converts data in argument field to
@@ -86,13 +86,19 @@ def createLabelTable():
 # It also sorts out the information of other
 # arguments while they are at it.
 
+# a little data type made global so that it is
+#can be used by two functions.
+KEYWORD_FOUND = False
+
 def createVarTable():
 	vprint("\nDECODE ARGUMENTS: \n")
 	memLocation = 0
 	varNotFound = False
+	global KEYWORD_FOUND
 
 	for key in FILE_DATA:
 		varFound = False
+		KEYWORD_FOUND = False
 
 		try:
 			FILE_DATA[key][1] = int(FILE_DATA[key][1])
@@ -105,98 +111,38 @@ def createVarTable():
 		except ValueError:
 
 			# REGISTER REFERENCE B1 AND B2
-			if(FILE_DATA[key][1] == "B1"):
-				vprint("Line "+str(key)+": Keyword found ---> "+str(FILE_DATA[key][1]))
-				FILE_DATA[key][1] = 0
-			
-			elif(FILE_DATA[key][1] == "B2"):
-				vprint("Line "+str(key)+": Keyword found ---> "+str(FILE_DATA[key][1]))
-				FILE_DATA[key][1] = 1
+
+			FILE_DATA[key][1] = evaluateKeyword(FILE_DATA[key][1], "B1", key, 0)
+			FILE_DATA[key][1] = evaluateKeyword(FILE_DATA[key][1], "B2", key, 8)
 
 			# ADD SPECIFIC ARGUMENTS
-			elif(FILE_DATA[key][1] == "B1+B2"):
-				vprint("Line "+str(key)+": Keyword found ---> "+str(FILE_DATA[key][1]))
-				FILE_DATA[key][1] = 0
-			
-			elif(FILE_DATA[key][1] == "B1-B2"):
-				vprint("Line "+str(key)+": Keyword found ---> "+str(FILE_DATA[key][1]))
-				FILE_DATA[key][1] = 1
-			
-			elif(FILE_DATA[key][1] == "-B1+B2"):
-				vprint("Line "+str(key)+": Keyword found ---> "+str(FILE_DATA[key][1]))
-				FILE_DATA[key][1] = 2
-			
-			elif(FILE_DATA[key][1] == "-B1-B2"):
-				vprint("Line "+str(key)+": Keyword found ---> "+str(FILE_DATA[key][1]))
-				FILE_DATA[key][1] = 3
+
+			FILE_DATA[key][1] = evaluateKeyword(FILE_DATA[key][1], "B1+B2", key, 0)
+			FILE_DATA[key][1] = evaluateKeyword(FILE_DATA[key][1], "B1-B2", key, 1)
+			FILE_DATA[key][1] = evaluateKeyword(FILE_DATA[key][1], "-B1+B2", key, 2)
+			FILE_DATA[key][1] = evaluateKeyword(FILE_DATA[key][1], "-B1-B2", key, 3)
 
 			# BOOL SPECIFIC ARGUMENTS
-			elif(FILE_DATA[key][1] == "BAND"):
-				vprint("Line "+str(key)+": Keyword found ---> "+str(FILE_DATA[key][1]))
-				FILE_DATA[key][1] = 0
 			
-			elif(FILE_DATA[key][1] == "LAND"):
-				vprint("Line "+str(key)+": Keyword found ---> "+str(FILE_DATA[key][1]))
-				FILE_DATA[key][1] = 1
-			
-			elif(FILE_DATA[key][1] == "BOR"):
-				vprint("Line "+str(key)+": Keyword found ---> "+str(FILE_DATA[key][1]))
-				FILE_DATA[key][1] = 2
-			
-			elif(FILE_DATA[key][1] == "LOR"):
-				vprint("Line "+str(key)+": Keyword found ---> "+str(FILE_DATA[key][1]))
-				FILE_DATA[key][1] = 3
-			
-			elif(FILE_DATA[key][1] == "XOR"):
-				vprint("Line "+str(key)+": Keyword found ---> "+str(FILE_DATA[key][1]))
-				FILE_DATA[key][1] = 4
-			
-			elif(FILE_DATA[key][1] == "XNOR"):
-				vprint("Line "+str(key)+": Keyword found ---> "+str(FILE_DATA[key][1]))
-				FILE_DATA[key][1] = 5
-			
-			elif(FILE_DATA[key][1] == "LB1"):
-				vprint("Line "+str(key)+": Keyword found ---> "+str(FILE_DATA[key][1]))
-				FILE_DATA[key][1] = 6
-			
-			elif(FILE_DATA[key][1] == "LB2"):
-				vprint("Line "+str(key)+": Keyword found ---> "+str(FILE_DATA[key][1]))
-				FILE_DATA[key][1] = 7
-			
-			elif(FILE_DATA[key][1] == "BNAND"):
-				vprint("Line "+str(key)+": Keyword found ---> "+str(FILE_DATA[key][1]))
-				FILE_DATA[key][1] = 8
-			
-			elif(FILE_DATA[key][1] == "LNAND"):
-				vprint("Line "+str(key)+": Keyword found ---> "+str(FILE_DATA[key][1]))
-				FILE_DATA[key][1] = 9
-			
-			elif(FILE_DATA[key][1] == "BNOR"):
-				vprint("Line "+str(key)+": Keyword found ---> "+str(FILE_DATA[key][1]))
-				FILE_DATA[key][1] = 10
-			
-			elif(FILE_DATA[key][1] == "LNOR"):
-				vprint("Line "+str(key)+": Keyword found ---> "+str(FILE_DATA[key][1]))
-				FILE_DATA[key][1] = 11
-			
-			elif(FILE_DATA[key][1] == "NB1"):
-				vprint("Line "+str(key)+": Keyword found ---> "+str(FILE_DATA[key][1]))
-				FILE_DATA[key][1] = 12
-			
-			elif(FILE_DATA[key][1] == "NB2"):
-				vprint("Line "+str(key)+": Keyword found ---> "+str(FILE_DATA[key][1]))
-				FILE_DATA[key][1] = 13
-			
-			elif(FILE_DATA[key][1] == "RB1"):
-				vprint("Line "+str(key)+": Keyword found ---> "+str(FILE_DATA[key][1]))
-				FILE_DATA[key][1] = 14
-			
-			elif(FILE_DATA[key][1] == "RB1"):
-				vprint("Line "+str(key)+": Keyword found ---> "+str(FILE_DATA[key][1]))
-				FILE_DATA[key][1] = 15
+			FILE_DATA[key][1] = evaluateKeyword(FILE_DATA[key][1], "BAND", key, 0)
+			FILE_DATA[key][1] = evaluateKeyword(FILE_DATA[key][1], "LAND", key, 1)
+			FILE_DATA[key][1] = evaluateKeyword(FILE_DATA[key][1], "BOR", key, 2)
+			FILE_DATA[key][1] = evaluateKeyword(FILE_DATA[key][1], "LOR", key, 3)
+			FILE_DATA[key][1] = evaluateKeyword(FILE_DATA[key][1], "BXOR", key, 4)
+			FILE_DATA[key][1] = evaluateKeyword(FILE_DATA[key][1], "BXNOR", key, 5)
+			FILE_DATA[key][1] = evaluateKeyword(FILE_DATA[key][1], "LB1", key, 6)
+			FILE_DATA[key][1] = evaluateKeyword(FILE_DATA[key][1], "LB2", key, 7)
+			FILE_DATA[key][1] = evaluateKeyword(FILE_DATA[key][1], "BNAND", key, 8)
+			FILE_DATA[key][1] = evaluateKeyword(FILE_DATA[key][1], "LNAND", key, 9)
+			FILE_DATA[key][1] = evaluateKeyword(FILE_DATA[key][1], "BNOR", key, 10)
+			FILE_DATA[key][1] = evaluateKeyword(FILE_DATA[key][1], "LNOR", key, 11)
+			FILE_DATA[key][1] = evaluateKeyword(FILE_DATA[key][1], "NB1", key, 12)
+			FILE_DATA[key][1] = evaluateKeyword(FILE_DATA[key][1], "NB2", key, 13)
+			FILE_DATA[key][1] = evaluateKeyword(FILE_DATA[key][1], "RB1", key, 14)
+			FILE_DATA[key][1] = evaluateKeyword(FILE_DATA[key][1], "RB2", key, 15)
 
 			# IF NOT KEYWORD -> THEN ITS A VARIABLE
-			else:
+			if(not KEYWORD_FOUND):
 				
 				# check to see if variable aldready exists in table
 				for varIndex in VAR_TABLE:
@@ -211,12 +157,12 @@ def createVarTable():
 				for labelName in LABEL_TABLE:
 					
 					if(labelName  == FILE_DATA[key][1]):
-						varFound = True
+						labelFound = True
 						vprint("Line "+str(key)+": Label Pointer found ---> "+FILE_DATA[key][1])
 						break
 
 				# if both cases are not found, then add it to the table
-				if(not varFound):
+				if((not varFound) and (not labelFound)):
 					vprint("Line "+str(key)+": New Variable found ---> "+FILE_DATA[key][1]+" ("+str(memLocation)+")")
 					VAR_TABLE[memLocation] = FILE_DATA[key][1]
 					FILE_DATA[key][1] = memLocation
@@ -230,6 +176,15 @@ def createVarTable():
 
 	vprint("*\n--------------------------------------------\n")
 
+
+def evaluateKeyword(curArg, keyword, linenum, keywordValue):
+	global KEYWORD_FOUND
+	if(curArg == keyword):
+		KEYWORD_FOUND = True
+		vprint("Line "+str(linenum)+": Keyword found ---> "+keyword)
+		return keywordValue
+	else:
+		return curArg
 
 # function to calculate offset of current line number
 # relative to a label's line number
