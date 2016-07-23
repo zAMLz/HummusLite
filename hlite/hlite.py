@@ -203,7 +203,8 @@ def createVarTable():
 					
 					if(VAR_TABLE[varIndex] == FILE_DATA[key][1]):
 						varFound = True
-						vprint("Line "+str(key)+": Old Variable found ---> "+FILE_DATA[key][1])
+						vprint("Line "+str(key)+": Old Variable found ---> "+FILE_DATA[key][1]+" ("+str(varIndex)+")")
+						FILE_DATA[key][1] = varIndex
 						break
 
 				# check to see if its actuall a label
@@ -216,8 +217,9 @@ def createVarTable():
 
 				# if both cases are not found, then add it to the table
 				if(not varFound):
-					vprint("Line "+str(key)+": New Variable found ---> "+FILE_DATA[key][1])
+					vprint("Line "+str(key)+": New Variable found ---> "+FILE_DATA[key][1]+" ("+str(memLocation)+")")
 					VAR_TABLE[memLocation] = FILE_DATA[key][1]
+					FILE_DATA[key][1] = memLocation
 					memLocation += 1
 
 
@@ -406,3 +408,6 @@ parseCmdLineArg()
 createLabelTable()
 createVarTable()
 asmCompile()
+
+for item in FILE_DATA:
+	print(str(FILE_DATA[item]))
