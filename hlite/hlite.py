@@ -23,7 +23,7 @@ import sys
 # Option to display or supress the output.
 # Defaults to supressing
 
-VERBOSE=True
+VERBOSE=False
 
 # Function to control verbose
 
@@ -38,6 +38,9 @@ ASSEMBLE = False
 
 # Option to state that it is simulating
 SIMULATE = False
+
+# Option to open help dialogue
+HELP = False
 
 
 # Label Table data structure
@@ -208,7 +211,7 @@ def createVarTable():
 					
 					if(labelName  == FILE_DATA[key][1]):
 						varFound = True
-						print("Line "+str(key)+": Label Pointer found ---> "+FILE_DATA[key][1])
+						vprint("Line "+str(key)+": Label Pointer found ---> "+FILE_DATA[key][1])
 						break
 
 				# if both cases are not found, then add it to the table
@@ -246,30 +249,96 @@ def labelOffset(label,linenum):
 # input file is read and processed into
 # a data structure.
 
-FILE_NAME = sys.argv[1]
+FILE_NAME = ""
 FILE_DATA = {}
 
-try:
-	vprint("\nPARSE INPUT FILE:\n")
-	humFile = open(FILE_NAME,'r')
 
-except IOError:
-	print("Cannot open file ",FILE_NAME)
-	exit(1)
+# Parse Input File Function:
+#	parses the input file obtatined 
+#	from the command line arguments
 
-else:
-	curLine = 0
-	for line in humFile:
-		
-		if(line[0] == "#"):
+def parseInputFile():
+	try:
+		vprint("\nPARSE INPUT FILE:\n")
+		humFile = open(FILE_NAME,'r')
+
+	except IOError:
+		print("Cannot open file ",FILE_NAME)
+		exit(1)
+
+	else:
+		curLine = 0
+		for line in humFile:
+			
+			if(line[0] == "#"):
+				continue
+			
+			FILE_DATA[curLine] = line.split()
+			vprint("Line "+str(curLine)+" ---> "+str(FILE_DATA[curLine]))
+			curLine += 1
+
+
+# Command Line Argument Function:
+#	figures out what the user 
+#	wants the program to do.
+
+def parseCmdLineArg():
+	
+	global FILE_NAME
+	global VERBOSE
+	global ASSEMBLE
+	global SIMULATE
+
+	firstTime = True
+
+	for argu in sys.argv:
+		if(firstTime):
+			firstTime = False
 			continue
-		
-		FILE_DATA[curLine] = line.split()
-		vprint("Line "+str(curLine)+" ---> "+str(FILE_DATA[curLine]))
-		curLine += 1
+
+		if(argu == "--verbose"):
+			VERBOSE = True
+
+		elif(argu == "--assemble"):
+			ASSEMBLE = True
+
+		elif(argu == "--simulate"):
+			SIMULATE = True
+
+		elif(argu == "--help"):
+			helpDialouge("help")
+
+		elif(argu[0] == "-"):
+			for character in argu:
+				if(character == "-"):
+					continue
+				elif(character == "a"):
+					ASSEMBLE = True
+				elif(character == "s"):
+					SIMULATE = True
+				elif(character == "v"):
+					VERBOSE = True
+				elif(character == "h"):
+					helpDialouge("help")
+				else:
+					helpDialouge("commandError")
+
+		elif(FILE_NAME == "" and argu != "hlite.py"):
+			FILE_NAME = argu
+
+		else:
+			helpDialouge("fileError")
+
+	parseInputFile()
 
 
-#	x	x	x	x	x	x	x	x	x	x	x	x	x	
+# Help function:
+#	Displays the help dialouge.
+#	changes with status
+
+def helpDialouge(status):
+	print(status)
+
 
 
 """
@@ -333,6 +402,7 @@ def decodeInstruction(asmi, lineNum):
 # -------------------------------------------------------
 """
 
+parseCmdLineArg()
 createLabelTable()
 createVarTable()
 asmCompile()
