@@ -1,13 +1,16 @@
-# -----------------------------------------------------------------	 
-# 		HLITE - HummusLite Compiler and Simulator					
-# 																	
-#	The goal of this program is to convert hummuslite assembly		
-#	into binary strings. This program also has the capability		
-#	to run these binary strings and simulate its behaviour			
-#	as it would on the minecraft world.								
-#																	
-#																	
-# -----------------------------------------------------------------	
+"""
+# -----------------------------------------------------------------
+# 		HLITE - HummusLite Compiler and Simulator
+#
+#	The goal of this program is to convert hummuslite assembly
+#	into binary strings. This program also has the capability
+#	to run these binary strings and simulate its behaviour
+#	as it would on the minecraft world.
+#
+#
+# -----------------------------------------------------------------
+"""
+# some imports.
 
 import sys
 
@@ -44,7 +47,7 @@ HELP = False
 
 
 # Label Table data structure
-# Keep track of which line number each 
+# Keep track of which line number each
 # label is.
 
 LABEL_TABLE = {}
@@ -53,7 +56,7 @@ LABEL_TABLE = {}
 
 def createLabelTable():
 	vprint("\nGENERATE LABEL TABLE: \n")
-	
+
 	for key in FILE_DATA:
 		try:
 			LABEL_TABLE[FILE_DATA[key][2]] = key
@@ -63,16 +66,16 @@ def createLabelTable():
 
 		else:
 			vprint("Line "+str(key)+": Label found ---> "+FILE_DATA[key][2])
-	
+
 	vprint("\n--------------------------------------------\n*\t\tLABEL TABLE\n*")
-	
+
 	for labelName in LABEL_TABLE:
-		vprint("*\t"+labelName+": \t\t"+str(LABEL_TABLE[labelName])) 
+		vprint("*\t"+labelName+": \t\t"+str(LABEL_TABLE[labelName]))
 
 	vprint("*\n--------------------------------------------\n")
 
 
-	
+
 # Variable Table data structure
 # keeps track of what variables exist
 # and what their memory address is
@@ -123,7 +126,7 @@ def createVarTable():
 			FILE_DATA[key][1] = evaluateKeyword(FILE_DATA[key][1], "-B1-B2", key, 3)
 
 			# BOOL SPECIFIC ARGUMENTS
-			
+
 			FILE_DATA[key][1] = evaluateKeyword(FILE_DATA[key][1], "BAND", key, 0)
 			FILE_DATA[key][1] = evaluateKeyword(FILE_DATA[key][1], "LAND", key, 1)
 			FILE_DATA[key][1] = evaluateKeyword(FILE_DATA[key][1], "BOR", key, 2)
@@ -143,10 +146,10 @@ def createVarTable():
 
 			# IF NOT KEYWORD -> THEN ITS A VARIABLE
 			if(not KEYWORD_FOUND):
-				
+
 				# check to see if variable aldready exists in table
 				for varIndex in VAR_TABLE:
-					
+
 					if(VAR_TABLE[varIndex] == FILE_DATA[key][1]):
 						varFound = True
 						vprint("Line "+str(key)+": Old Variable found ---> "+FILE_DATA[key][1]+" ("+str(varIndex)+")")
@@ -155,7 +158,7 @@ def createVarTable():
 
 				# check to see if its actuall a label
 				for labelName in LABEL_TABLE:
-					
+
 					if(labelName  == FILE_DATA[key][1]):
 						labelFound = True
 						vprint("Line "+str(key)+": Label Pointer found ---> "+FILE_DATA[key][1])
@@ -170,9 +173,9 @@ def createVarTable():
 
 
 	vprint("\n--------------------------------------------\n*\t\tVARIABLE TABLE\n*")
-	
+
 	for varLocation in VAR_TABLE:
-		vprint("*\t"+str(varLocation)+": "+VAR_TABLE[varLocation]) 
+		vprint("*\t"+str(varLocation)+": "+VAR_TABLE[varLocation])
 
 	vprint("*\n--------------------------------------------\n")
 
@@ -211,7 +214,7 @@ FILE_DATA = {}
 
 
 # Parse Input File Function:
-#	parses the input file obtatined 
+#	parses the input file obtatined
 #	from the command line arguments
 
 def parseInputFile():
@@ -226,21 +229,21 @@ def parseInputFile():
 	else:
 		curLine = 0
 		for line in humFile:
-			
+
 			if(line[0] == "#"):
 				continue
-			
+
 			FILE_DATA[curLine] = line.split()
 			vprint("Line "+str(curLine)+" ---> "+str(FILE_DATA[curLine]))
 			curLine += 1
 
 
 # Command Line Argument Function:
-#	figures out what the user 
+#	figures out what the user
 #	wants the program to do.
 
 def parseCmdLineArg():
-	
+
 	global FILE_NAME
 	global VERBOSE
 	global ASSEMBLE
@@ -307,32 +310,32 @@ def helpDialouge(status):
 """
 
 # Compile function:
-# 	Reads input from the file and 
+# 	Reads input from the file and
 #	produces binary strings
 
 def asmCompile():
-	
+
 	try:
 		binFile = open(FILE_NAME+"_BIN",'w')
-	
+
 	except IOError:
 		print("Unable to write to file ",FILE_NAME+"_BIN")
 		exit(1)
-	
+
 	else:
-		curLine = 0	
+		curLine = 0
 		for line in FILE_DATA:
-			
+
 			temp = decodeInstruction(FILE_DATA[line],curLine)
 			binFile.write(temp)
 			curLine += 1
-		
+
 		binFile.close()
 
 
 
 # Decode Compile function:
-#	the goal of this function is to 
+#	the goal of this function is to
 #	take an assembly instruction
 #	and convert into binary string
 
