@@ -69,3 +69,5 @@ ARGS | Psuedo-Code | Description
 01 | RS = B1 + (-B2) | Add B1 and -B2
 10 | RS = (-B1) + B2 | Add -B1 and B2
 11 | RS = (-B1) + (-B2) | Add -B1 and -B2
+
+# Writing your own assembly 
