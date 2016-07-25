@@ -56,7 +56,7 @@ LABEL_TABLE = {}
 # function to generate label dictionary
 
 def createLabelTable():
-	vprint("\nGENERATE LABEL TABLE: \n")
+	vprint("\n\n\n*******************************************\nGENERATE LABEL TABLE: \n*******************************************\n")
 
 	for key in FILE_DATA:
 		try:
@@ -67,6 +67,7 @@ def createLabelTable():
 
 		else:
 			vprint("Line "+str(key)+": Label found ---> "+FILE_DATA[key][2])
+			FILE_DATA[key] = [FILE_DATA[key][0], FILE_DATA[key][1]]
 
 	vprint("\n--------------------------------------------\n*\t\tLABEL TABLE\n*")
 
@@ -95,13 +96,14 @@ VAR_TABLE = {}
 KEYWORD_FOUND = False
 
 def createVarTable():
-	vprint("\nDECODE ARGUMENTS: \n")
+	vprint("\n\n\n*******************************************\nDECODE ARGUMENTS: \n*******************************************\n")
 	memLocation = 0
 	varNotFound = False
 	global KEYWORD_FOUND
 
 	for key in FILE_DATA:
 		varFound = False
+		labelFound = False
 		KEYWORD_FOUND = False
 
 		try:
@@ -153,7 +155,7 @@ def createVarTable():
 
 					if(VAR_TABLE[varIndex] == FILE_DATA[key][1]):
 						varFound = True
-						vprint("Line "+str(key)+": Old Variable found ---> "+FILE_DATA[key][1]+" ("+str(varIndex)+")")
+						vprint("Line "+str(key)+": Old Var found ---> "+FILE_DATA[key][1]+" ("+str(varIndex)+")")
 						FILE_DATA[key][1] = varIndex
 						break
 
@@ -162,12 +164,13 @@ def createVarTable():
 
 					if(labelName  == FILE_DATA[key][1]):
 						labelFound = True
-						vprint("Line "+str(key)+": Label Pointer found ---> "+FILE_DATA[key][1])
+						vprint("Line "+str(key)+": Label   found ---> "+FILE_DATA[key][1])
+						FILE_DATA[key][1] = labelOffset(FILE_DATA[key][1], key, FILE_DATA[key][0])
 						break
 
 				# if both cases are not found, then add it to the table
 				if((not varFound) and (not labelFound)):
-					vprint("Line "+str(key)+": New Variable found ---> "+FILE_DATA[key][1]+" ("+str(memLocation)+")")
+					vprint("Line "+str(key)+": New Var found ---> "+FILE_DATA[key][1]+" ("+str(memLocation)+")")
 					VAR_TABLE[memLocation] = FILE_DATA[key][1]
 					FILE_DATA[key][1] = memLocation
 					memLocation += 1
@@ -193,8 +196,44 @@ def evaluateKeyword(curArg, keyword, linenum, keywordValue):
 # function to calculate offset of current line number
 # relative to a label's line number
 
-def labelOffset(label,linenum):
-	pass
+def labelOffset(label,linenum, instruction):
+	offsetVal = LABEL_TABLE[label] - linenum
+	
+	# SHFF offsets have to be positive.
+	if(instruction == "SHFF"):
+		if(offsetVal > 0):
+			return offsetVal
+
+		elif(offsetVal == 0):
+			print("\n*\t*\t*\t*\t*\nError! SHFF points to itself! Found in Line "+str(linenum))
+			exit(1)
+
+		else:
+			print("\n*\t*\t*\t*\t*\nError! SHFF is pointing backwards! Use SHFB. Found in Line "+str(linenum))
+			exit(1)
+
+	# SHFB offsets have to be negative
+	# but they must be stored as positives
+	elif(instruction == "SHFB"):
+		if(offsetVal < 0):
+			return -offsetVal
+
+		elif(offsetVal == 0):
+			print("\n*\t*\t*\t*\t*\nError! SHFF points to itself! Found in Line "+str(linenum))
+			exit(1)
+
+		else:
+			print("\n*\t*\t*\t*\t*\nError! SHFB is pointing forwards! Use SHFF. Found in Line "+str(linenum))
+			exit(1)
+
+	# if its neither of these instructions
+	# its safe to just return calculated 
+	# offset value.
+	else:
+		return offsetVal
+	# Its probably BNR. But if its not,
+	# its just a value anyway...
+
 
 
 """
@@ -220,7 +259,7 @@ FILE_DATA = {}
 
 def parseInputFile():
 	try:
-		vprint("\nPARSE INPUT FILE:\n")
+		vprint("\n\n\n*******************************************\nPARSE INPUT FILE:\n*******************************************\n")
 		humFile = open(FILE_NAME,'r')
 
 	except IOError:
@@ -300,7 +339,16 @@ def parseCmdLineArg():
 def helpDialouge(status):
 	print(status)
 
+# Display file function:
+#	a function to display the contents of 
+#	FILE_DATA data structure
 
+def displayFileData():
+	vprint("\n\n\n*******************************************\nDISPLAYING FILE DATA:\n*******************************************\n")
+	curLine = 0
+	for item in FILE_DATA:
+		print(str(curLine)+":\t"+str(FILE_DATA[item]))
+		curLine += 1
 
 """
 # ----------------------------------------------------
@@ -313,7 +361,7 @@ def helpDialouge(status):
 # Compile function:
 # 	Reads input from the file and
 #	produces binary strings
-
+"""
 def asmCompile():
 
 	try:
@@ -332,7 +380,12 @@ def asmCompile():
 			curLine += 1
 
 		binFile.close()
-
+"""
+def asmCompile():
+	curLine = 0
+	for line in FILE_DATA:
+		FILE_DATA[line][0],FILE_DATA[line][1] = decodeInstruction(FILE_DATA[line][0], FILE_DATA[line][1], curLine)
+		curLine += 1
 
 
 # Decode Compile function:
@@ -340,19 +393,94 @@ def asmCompile():
 #	take an assembly instruction
 #	and convert into binary string
 
-# argsType chart
-#		arg structure = value
-#	-------------------------------------
-#	 	---- = 0	\dtype
-#		xxxx = 1	\xtype
-#		zxxx = 2	\ztype
-#		yyyy = 3	\ytype
-#		mmmm = 3	\mtype
-#		cccc = 4	\ctype
+def decodeInstruction(opcode, argi, curLine):
+	return decodeOpcode(opcode, curLine), intToBin(argi, curLine)
 
-def decodeInstruction(asmi, lineNum):
-	instruction = asmi[0]
-	return instruction
+# Decode Instruction function:
+#	this function finds the instruction 
+#	and returns its proper binary string
+
+def decodeOpcode(opcode, curLine):
+	opcodeFound = False
+	
+	# search for opcode
+	opcode, opcodeFound = decodeHelper(opcode, "HALT" , "0000", opcodeFound)
+	opcode, opcodeFound = decodeHelper(opcode, "SHFF" , "0001", opcodeFound)
+	opcode, opcodeFound = decodeHelper(opcode, "SHFB" , "0010", opcodeFound)
+	opcode, opcodeFound = decodeHelper(opcode, "BNR"  , "0011", opcodeFound)
+	opcode, opcodeFound = decodeHelper(opcode, "INP"  , "0100", opcodeFound)
+	opcode, opcodeFound = decodeHelper(opcode, "STR"  , "0101", opcodeFound)
+	opcode, opcodeFound = decodeHelper(opcode, "LDB1" , "0110", opcodeFound)
+	opcode, opcodeFound = decodeHelper(opcode, "LDB2" , "0111", opcodeFound)
+	opcode, opcodeFound = decodeHelper(opcode, "ADDB1", "1000", opcodeFound)
+	opcode, opcodeFound = decodeHelper(opcode, "ADDB2", "1001", opcodeFound)
+	opcode, opcodeFound = decodeHelper(opcode, "BOOL" , "1010", opcodeFound)
+	opcode, opcodeFound = decodeHelper(opcode, "ADD"  , "1011", opcodeFound)
+	opcode, opcodeFound = decodeHelper(opcode, "SUBB1", "1100", opcodeFound)
+	opcode, opcodeFound = decodeHelper(opcode, "SUBB2", "1101", opcodeFound)
+	opcode, opcodeFound = decodeHelper(opcode, "STM"  , "1110", opcodeFound)
+	opcode, opcodeFound = decodeHelper(opcode, "MEMC" , "1111", opcodeFound)
+	
+	# if opcode not found return error
+	if(not opcodeFound):
+		print("\n*\t*\t*\t*\t*\nError! Unable to decode opcode: "+opcode+" : On line -> "+str(curLine))
+
+	# else return the found value
+	return opcode
+
+# Decode Instruction Helper function:
+#	a simple if statement handler.
+
+def decodeHelper(inCode, asmString, binString, Found):
+	if((inCode == asmString) and (not Found)):
+		Found = True
+		return binString, Found
+	else:
+		return inCode, Found
+
+# integer to binary function:
+#	this function takes and integer
+#	and returns its binary string
+#	Fails if integer out of bounds.
+
+def intToBin(argi, curLine):
+	argiFound = False
+	
+	# positive or unsigned numbers
+	argi, argiFound = decodeHelper(argi, 0,  "0000", argiFound)
+	argi, argiFound = decodeHelper(argi, 1,  "0001", argiFound)
+	argi, argiFound = decodeHelper(argi, 2,  "0010", argiFound)
+	argi, argiFound = decodeHelper(argi, 3,  "0011", argiFound)
+	argi, argiFound = decodeHelper(argi, 4,  "0100", argiFound)
+	argi, argiFound = decodeHelper(argi, 5,  "0101", argiFound)
+	argi, argiFound = decodeHelper(argi, 6,  "0110", argiFound)
+	argi, argiFound = decodeHelper(argi, 7,  "0111", argiFound)
+	argi, argiFound = decodeHelper(argi, 8,  "1000", argiFound)
+	argi, argiFound = decodeHelper(argi, 9,  "1001", argiFound)
+	argi, argiFound = decodeHelper(argi, 10, "1010", argiFound)
+	argi, argiFound = decodeHelper(argi, 11, "1011", argiFound)
+	argi, argiFound = decodeHelper(argi, 12, "1100", argiFound)
+	argi, argiFound = decodeHelper(argi, 13, "1101", argiFound)
+	argi, argiFound = decodeHelper(argi, 14, "1110", argiFound)
+	argi, argiFound = decodeHelper(argi, 15, "1111", argiFound)
+	
+	# negative numbers
+	argi, argiFound = decodeHelper(argi, -8,  "1000", argiFound)
+	argi, argiFound = decodeHelper(argi, -7,  "1001", argiFound)
+	argi, argiFound = decodeHelper(argi, -6, "1010", argiFound)
+	argi, argiFound = decodeHelper(argi, -5, "1011", argiFound)
+	argi, argiFound = decodeHelper(argi, -4, "1100", argiFound)
+	argi, argiFound = decodeHelper(argi, -3, "1101", argiFound)
+	argi, argiFound = decodeHelper(argi, -2, "1110", argiFound)
+	argi, argiFound = decodeHelper(argi, -1, "1111", argiFound)
+	
+	# if still not found return error
+	if(not argiFound):
+		print("\n*\t*\t*\t*\t*\nError! Integer out of bounds (-8 <= x <= 15) : "+str(argi)+"\nFound on line -> "+str(curLine))
+	
+	# else return the found value
+	return argi
+
 
 
 """
@@ -367,6 +495,6 @@ parseCmdLineArg()
 createLabelTable()
 createVarTable()
 asmCompile()
+displayFileData()
 
-for item in FILE_DATA:
-	print(str(FILE_DATA[item]))
+

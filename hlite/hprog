@@ -2,7 +2,7 @@
 #	Creates the number 46 and stores it
 #	into val.
 #
-ADDB1	15
+ADDB1	15		SETUP_VAL
 STR		B1
 ADDB1	15
 STR		B1
@@ -14,24 +14,43 @@ STM		VAL
 #	Creates the number 3 and stores it
 #	into count
 #
-ADDB2	3
+ADDB2	3		SETUP_COUNT
 STR		B2
 STM		COUNT
 #
 #	reload val
 #	into b2
 #
-LDB2	VAL
+LDB2	VAL 	RELOAD_VALUE
 #
 #	Need to hardcode every bool option
 #	Need to hardcode every add option
 #
-#	---------------------------------
+BOOL 	BAND 	BOOL_START
+BOOL 	LAND
+BOOL 	BOR
+BOOL 	LOR
+BOOL 	BXOR
+BOOL 	BXNOR
+BOOL 	LB1
+BOOL 	LB2
+BOOL 	BNAND
+BOOL 	LNAND
+BOOL 	BNOR
+BOOL 	LNOR
+BOOL 	NB1
+BOOL 	NB2
+BOOL 	RB1
+BOOL 	RB2
+ADD 	B1+B2
+ADD 	B1-B2
+ADD 	-B1+B2
+ADD 	-B1-B2
 #
 #	load current sum and update it
 #	and save current sum
 #
-LDB1	SUM		LOOPSTART
+LDB1	SUM		LOOP_START
 ADD		B1+B2
 STM		SUM
 #
@@ -45,14 +64,14 @@ STM		COUNT
 #	if result is not zero, update pc by 2
 #	else continue forward to end loop
 #
-BNR		2
-SHFF	LOOPEND
-SHFB	LOOPSTART
+BNR		2				LABEL_BNR
+SHFF	LOOP_END		LABEL_SHFF
+SHFB	LOOP_START		LABEL_SHFB
 #
 #	load current sum and load it into
 #	the result register to display
 #
-LDB1	SUM 	LOOPEND
+LDB1	SUM 	LOOP_END
 ADDB1	0
 HALT	0
 #
