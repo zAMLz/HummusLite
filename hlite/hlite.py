@@ -277,6 +277,24 @@ def parseInputFile():
 			vprint("Line "+str(curLine)+" ---> "+str(FILE_DATA[curLine]))
 			curLine += 1
 
+# Write File Data Function:
+#	write the file data into a 
+#	an actualy file
+
+def writeFileData():
+	try:
+		binFile = open(FILE_NAME+"_BIN",'w')
+
+	except IOError:
+		print("Unable to write to file ",FILE_NAME+"_BIN")
+		exit(1)
+
+	else:
+		for line in FILE_DATA:
+			binFile.write(FILE_DATA[line][0]+" "+FILE_DATA[line][1]+"\n")
+
+		binFile.close()
+
 
 # Command Line Argument Function:
 #	figures out what the user
@@ -347,7 +365,7 @@ def displayFileData():
 	vprint("\n\n\n*******************************************\nDISPLAYING FILE DATA:\n*******************************************\n")
 	curLine = 0
 	for item in FILE_DATA:
-		print(str(curLine)+":\t"+str(FILE_DATA[item]))
+		vprint(str(curLine)+":\t"+str(FILE_DATA[item]))
 		curLine += 1
 
 """
@@ -361,26 +379,7 @@ def displayFileData():
 # Compile function:
 # 	Reads input from the file and
 #	produces binary strings
-"""
-def asmCompile():
 
-	try:
-		binFile = open(FILE_NAME+"_BIN",'w')
-
-	except IOError:
-		print("Unable to write to file ",FILE_NAME+"_BIN")
-		exit(1)
-
-	else:
-		curLine = 0
-		for line in FILE_DATA:
-
-			temp = decodeInstruction(FILE_DATA[line],curLine)
-			binFile.write(temp)
-			curLine += 1
-
-		binFile.close()
-"""
 def asmCompile():
 	curLine = 0
 	for line in FILE_DATA:
@@ -491,10 +490,26 @@ def intToBin(argi, curLine):
 # -------------------------------------------------------
 """
 
-parseCmdLineArg()
-createLabelTable()
-createVarTable()
-asmCompile()
-displayFileData()
+def main():
+	parseCmdLineArg()
+	
+	if(ASSEMBLE):
+		createLabelTable()
+		createVarTable()
+		asmCompile()
+		displayFileData()
+
+	if(ASSEMBLE and (not SIMULATE)):
+		writeFileData()
+
+	if(SIMULATE):
+		pass
+
+
+
+
+
+# start the main function
+main()
 
 
