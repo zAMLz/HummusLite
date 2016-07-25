@@ -41,24 +41,24 @@ OPCODE | ARGS | Instruction | Psuedo-Code | Description
 #### Behaviour of BOOL
 The instruction BOOL performs a boolean or a logical operation based on the current value of ARGS. Hence it can do 16 different boolean operations. Here is the list.
 
-ARGS | Psuedo-Code | Description
-----------|-------------|------------
-0000 | RS = B1 & B2 | Bitwise AND
-0001 | RS = B1 && B2 | Logical AND
-0010 | RS = B1 \| B2 | Bitwise OR
-0011 | RS = B1 \|\| B2 | Logical OR
-0100 | RS = B1 ^ B2 | Bitwise XOR
-0101 | RS = B1 ~^ B2 | Bitwise XNOR
-0110 | RS = B1 << 1 | Left Shift on B1
-0111 | RS = B2 << 1 | Left Shift on B2
-1000 | RS = ~(B1 & B2) | Bitwise NAND
-1001 | RS = !(B1 && B2) | Logical NAND
-1010 | RS = ~(B1 \| B2) | Bitwise NOR
-1011 | RS = !(B1 \|\| B2) | Logical NOR
-1100 | RS = ~B1 | Bitwise NOT on B1
-1101 | RS = ~B2 | Bitwise NOT on B2
-1110 | RS = B1 >> 1 | Right Shift on B1
-1111 | RS = B2 >> 1 | Right Shift on B2
+ARGS | Psuedo-Code | Description | Keyword
+----------|-------------|------------|-------
+0000 | RS = B1 & B2 | Bitwise AND | BAND
+0001 | RS = B1 && B2 | Logical AND | LAND
+0010 | RS = B1 \| B2 | Bitwise OR | BOR
+0011 | RS = B1 \|\| B2 | Logical OR | LOR
+0100 | RS = B1 ^ B2 | Bitwise XOR | BXOR
+0101 | RS = B1 ~^ B2 | Bitwise XNOR | BXNOR
+0110 | RS = B1 << 1 | Left Shift on B1 | LB1
+0111 | RS = B2 << 1 | Left Shift on B2 | LB2
+1000 | RS = ~(B1 & B2) | Bitwise NAND | BNAND
+1001 | RS = !(B1 && B2) | Logical NAND |LNAND
+1010 | RS = ~(B1 \| B2) | Bitwise NOR | BNOR
+1011 | RS = !(B1 \|\| B2) | Logical NOR | LNOR
+1100 | RS = ~B1 | Bitwise NOT on B1 | NB1
+1101 | RS = ~B2 | Bitwise NOT on B2 | NB2
+1110 | RS = B1 >> 1 | Right Shift on B1 | RB1
+1111 | RS = B2 >> 1 | Right Shift on B2 | RB2
 
 #### Behaviour of ADD
 The instruction ADD simply adds register B1 and B2 in four different ways. Based on the ARGS value, it decides whether it should negate a register or two. Here is the list.
@@ -71,3 +71,11 @@ ARGS | Psuedo-Code | Description
 11 | RS = (-B1) + (-B2) | Add -B1 and -B2
 
 # Writing your own assembly 
+So you want to test this out and write your own code? Well testing it out on minecraft would be hassle to debug and input into minecraft. So to aid with that, there is a python program in the hlite folder just for that purpose. Use the following command to learn how to use hlite.py. 
+'''
+python hlite.py --help
+'''
+
+# System Design
+You don't need this to start programming the system but it is useful information to see how the system works.
+USEFUL INFO HERE
