@@ -263,7 +263,7 @@ def parseInputFile():
 		humFile = open(FILE_NAME,'r')
 
 	except IOError:
-		print("Cannot open file ",FILE_NAME)
+		print("\n*\t*\t*\t*\t*\nError! Cannot open file ",FILE_NAME)
 		exit(1)
 
 	else:
@@ -286,7 +286,7 @@ def writeFileData():
 		binFile = open(FILE_NAME+"_BIN",'w')
 
 	except IOError:
-		print("Unable to write to file ",FILE_NAME+"_BIN")
+		print("\n*\t*\t*\t*\t*\nError! Unable to write to file ",FILE_NAME+"_BIN")
 		exit(1)
 
 	else:
@@ -341,8 +341,11 @@ def parseCmdLineArg():
 				else:
 					helpDialouge("commandError")
 
-		elif(FILE_NAME == "" and argu != "hlite.py"):
+		elif(FILE_NAME == ""):
 			FILE_NAME = argu
+
+		elif(argu[0] == "-" and argu[1] == "-"):
+			helpDialouge("commandError")
 
 		else:
 			helpDialouge("fileError")
@@ -355,7 +358,20 @@ def parseCmdLineArg():
 #	changes with status
 
 def helpDialouge(status):
-	print(status)
+	exitCode = 0
+
+	if(status == "help"):
+		print("Welcome to Help")
+
+	elif(status == "commandError"):
+		print("You have entered an invalid command")
+
+	elif(status == "fileError"):
+		print("You have entered another filename, there can only be one file")
+
+	exit(exitCode)
+
+
 
 # Display file function:
 #	a function to display the contents of 
@@ -482,6 +498,136 @@ def intToBin(argi, curLine):
 
 
 
+
+
+"""
+# ----------------------------------------------------
+#
+# Simulation Functions
+#
+# ----------------------------------------------------
+"""
+
+def simulation():
+
+	vprint("intializing system")
+	# program counter
+	programCounter = 0
+	# register b1
+	registerB1 = "0000 0000"
+	# register b2
+	registerB2 = "0000 0000"
+	# result register
+	registerRS = "0000 0000"
+	# setup main memory
+	mainMem = {}
+	mainMem["0000"] = "0000 0000"
+	mainMem["0001"] = "0000 0000"
+	mainMem["0010"] = "0000 0000"
+	mainMem["0011"] = "0000 0000"
+	mainMem["0100"] = "0000 0000"
+	mainMem["0101"] = "0000 0000"
+	mainMem["0110"] = "0000 0000"
+	mainMem["0111"] = "0000 0000"
+	mainMem["1000"] = "0000 0000"
+	mainMem["1001"] = "0000 0000"
+	mainMem["1010"] = "0000 0000"
+	mainMem["1011"] = "0000 0000"
+	mainMem["1100"] = "0000 0000"
+	mainMem["1101"] = "0000 0000"
+	mainMem["1110"] = "0000 0000"
+	mainMem["1111"] = "0000 0000"
+
+	# start program
+	while(True):
+
+		# perform safety checks here
+
+		# Display current status of the program
+
+		# start reading instructions.
+		
+		# HALT
+		if(FILE_DATA[programCounter][0] == "0000"):
+			break
+
+		# SHFF
+		elif(FILE_DATA[programCounter][0] == "0001"):
+			pass
+		
+		# SHFB
+		elif(FILE_DATA[programCounter][0] == "0010"):
+			pass
+			
+		# BNR
+		elif(FILE_DATA[programCounter][0] == "0011"):
+			pass
+		
+		# INP
+		elif(FILE_DATA[programCounter][0] == "0100"):
+			pass
+		
+		# STR
+		elif(FILE_DATA[programCounter][0] == "0101"):
+			pass
+		
+		# LDB1
+		elif(FILE_DATA[programCounter][0] == "0110"):
+			pass
+		
+		# LDB2
+		elif(FILE_DATA[programCounter][0] == "0111"):
+			pass
+		
+		# ADDB1
+		elif(FILE_DATA[programCounter][0] == "1000"):
+			pass
+		
+		# ADDB2
+		elif(FILE_DATA[programCounter][0] == "1001"):
+			pass
+		
+		# BOOL
+		elif(FILE_DATA[programCounter][0] == "1010"):
+			pass
+		
+		# ADD
+		elif(FILE_DATA[programCounter][0] == "1011"):
+			pass
+		
+		# SUBB1
+		elif(FILE_DATA[programCounter][0] == "1100"):
+			pass
+		
+		# SUBB2
+		elif(FILE_DATA[programCounter][0] == "1101"):
+			pass
+		
+		# STM
+		elif(FILE_DATA[programCounter][0] == "1110"):
+			pass
+		
+		# MEMC
+		elif(FILE_DATA[programCounter][0] == "1111"):
+			mainMem["0000"] = "0000 0000"
+			mainMem["0001"] = "0000 0000"
+			mainMem["0010"] = "0000 0000"
+			mainMem["0011"] = "0000 0000"
+			mainMem["0100"] = "0000 0000"
+			mainMem["0101"] = "0000 0000"
+			mainMem["0110"] = "0000 0000"
+			mainMem["0111"] = "0000 0000"
+			mainMem["1000"] = "0000 0000"
+			mainMem["1001"] = "0000 0000"
+			mainMem["1010"] = "0000 0000"
+			mainMem["1011"] = "0000 0000"
+			mainMem["1100"] = "0000 0000"
+			mainMem["1101"] = "0000 0000"
+			mainMem["1110"] = "0000 0000"
+			mainMem["1111"] = "0000 0000"
+		programCounter += 1
+
+
 """
 # -----------------------------------------------------
 #
@@ -503,7 +649,7 @@ def main():
 		writeFileData()
 
 	if(SIMULATE):
-		pass
+		simulation()
 
 
 
