@@ -432,6 +432,7 @@ def decodeOpcode(opcode, curLine):
 	# if opcode not found return error
 	if(not opcodeFound):
 		print("\n*\t*\t*\t*\t*\nError! Unable to decode opcode: "+opcode+" : On line -> "+str(curLine))
+		exit(1)
 
 	# else return the found value
 	return opcode
