@@ -91,20 +91,14 @@ VAR_TABLE = {}
 # It also sorts out the information of other
 # arguments while they are at it.
 
-# a little data type made global so that it is
-#can be used by two functions.
-KEYWORD_FOUND = False
-
 def createVarTable():
 	vprint("\n\n\n*******************************************\nDECODE ARGUMENTS: \n*******************************************\n")
 	memLocation = 0
-	varNotFound = False
-	global KEYWORD_FOUND
 
 	for key in FILE_DATA:
 		varFound = False
 		labelFound = False
-		KEYWORD_FOUND = False
+		keywordFound= False
 
 		try:
 			FILE_DATA[key][1] = int(FILE_DATA[key][1])
@@ -118,37 +112,37 @@ def createVarTable():
 
 			# REGISTER REFERENCE B1 AND B2
 
-			FILE_DATA[key][1] = evaluateKeyword(FILE_DATA[key][1], "B1", key, 0)
-			FILE_DATA[key][1] = evaluateKeyword(FILE_DATA[key][1], "B2", key, 8)
+			FILE_DATA[key][1], keywordFound = evaluateKeyword(FILE_DATA[key][1], "B1", key, 0, keywordFound)
+			FILE_DATA[key][1], keywordFound = evaluateKeyword(FILE_DATA[key][1], "B2", key, 8, keywordFound)
 
 			# ADD SPECIFIC ARGUMENTS
 
-			FILE_DATA[key][1] = evaluateKeyword(FILE_DATA[key][1], "B1+B2", key, 0)
-			FILE_DATA[key][1] = evaluateKeyword(FILE_DATA[key][1], "B1-B2", key, 1)
-			FILE_DATA[key][1] = evaluateKeyword(FILE_DATA[key][1], "-B1+B2", key, 2)
-			FILE_DATA[key][1] = evaluateKeyword(FILE_DATA[key][1], "-B1-B2", key, 3)
+			FILE_DATA[key][1], keywordFound = evaluateKeyword(FILE_DATA[key][1], "B1+B2", key, 0, keywordFound)
+			FILE_DATA[key][1], keywordFound = evaluateKeyword(FILE_DATA[key][1], "B1-B2", key, 1, keywordFound)
+			FILE_DATA[key][1], keywordFound = evaluateKeyword(FILE_DATA[key][1], "-B1+B2", key, 2, keywordFound)
+			FILE_DATA[key][1], keywordFound = evaluateKeyword(FILE_DATA[key][1], "-B1-B2", key, 3, keywordFound)
 
 			# BOOL SPECIFIC ARGUMENTS
 
-			FILE_DATA[key][1] = evaluateKeyword(FILE_DATA[key][1], "BAND", key, 0)
-			FILE_DATA[key][1] = evaluateKeyword(FILE_DATA[key][1], "LAND", key, 1)
-			FILE_DATA[key][1] = evaluateKeyword(FILE_DATA[key][1], "BOR", key, 2)
-			FILE_DATA[key][1] = evaluateKeyword(FILE_DATA[key][1], "LOR", key, 3)
-			FILE_DATA[key][1] = evaluateKeyword(FILE_DATA[key][1], "BXOR", key, 4)
-			FILE_DATA[key][1] = evaluateKeyword(FILE_DATA[key][1], "BXNOR", key, 5)
-			FILE_DATA[key][1] = evaluateKeyword(FILE_DATA[key][1], "LB1", key, 6)
-			FILE_DATA[key][1] = evaluateKeyword(FILE_DATA[key][1], "LB2", key, 7)
-			FILE_DATA[key][1] = evaluateKeyword(FILE_DATA[key][1], "BNAND", key, 8)
-			FILE_DATA[key][1] = evaluateKeyword(FILE_DATA[key][1], "LNAND", key, 9)
-			FILE_DATA[key][1] = evaluateKeyword(FILE_DATA[key][1], "BNOR", key, 10)
-			FILE_DATA[key][1] = evaluateKeyword(FILE_DATA[key][1], "LNOR", key, 11)
-			FILE_DATA[key][1] = evaluateKeyword(FILE_DATA[key][1], "NB1", key, 12)
-			FILE_DATA[key][1] = evaluateKeyword(FILE_DATA[key][1], "NB2", key, 13)
-			FILE_DATA[key][1] = evaluateKeyword(FILE_DATA[key][1], "RB1", key, 14)
-			FILE_DATA[key][1] = evaluateKeyword(FILE_DATA[key][1], "RB2", key, 15)
+			FILE_DATA[key][1], keywordFound = evaluateKeyword(FILE_DATA[key][1], "BAND", key, 0, keywordFound)
+			FILE_DATA[key][1], keywordFound = evaluateKeyword(FILE_DATA[key][1], "LAND", key, 1, keywordFound)
+			FILE_DATA[key][1], keywordFound = evaluateKeyword(FILE_DATA[key][1], "BOR", key, 2, keywordFound)
+			FILE_DATA[key][1], keywordFound = evaluateKeyword(FILE_DATA[key][1], "LOR", key, 3, keywordFound)
+			FILE_DATA[key][1], keywordFound = evaluateKeyword(FILE_DATA[key][1], "BXOR", key, 4, keywordFound)
+			FILE_DATA[key][1], keywordFound = evaluateKeyword(FILE_DATA[key][1], "BXNOR", key, 5, keywordFound)
+			FILE_DATA[key][1], keywordFound = evaluateKeyword(FILE_DATA[key][1], "LB1", key, 6, keywordFound)
+			FILE_DATA[key][1], keywordFound = evaluateKeyword(FILE_DATA[key][1], "LB2", key, 7, keywordFound)
+			FILE_DATA[key][1], keywordFound = evaluateKeyword(FILE_DATA[key][1], "BNAND", key, 8, keywordFound)
+			FILE_DATA[key][1], keywordFound = evaluateKeyword(FILE_DATA[key][1], "LNAND", key, 9, keywordFound)
+			FILE_DATA[key][1], keywordFound = evaluateKeyword(FILE_DATA[key][1], "BNOR", key, 10, keywordFound)
+			FILE_DATA[key][1], keywordFound = evaluateKeyword(FILE_DATA[key][1], "LNOR", key, 11, keywordFound)
+			FILE_DATA[key][1], keywordFound = evaluateKeyword(FILE_DATA[key][1], "NB1", key, 12, keywordFound)
+			FILE_DATA[key][1], keywordFound = evaluateKeyword(FILE_DATA[key][1], "NB2", key, 13, keywordFound)
+			FILE_DATA[key][1], keywordFound = evaluateKeyword(FILE_DATA[key][1], "RB1", key, 14, keywordFound)
+			FILE_DATA[key][1], keywordFound = evaluateKeyword(FILE_DATA[key][1], "RB2", key, 15, keywordFound)
 
 			# IF NOT KEYWORD -> THEN ITS A VARIABLE
-			if(not KEYWORD_FOUND):
+			if(not keywordFound):
 
 				# check to see if variable aldready exists in table
 				for varIndex in VAR_TABLE:
@@ -184,14 +178,13 @@ def createVarTable():
 	vprint("*\n--------------------------------------------\n")
 
 
-def evaluateKeyword(curArg, keyword, linenum, keywordValue):
-	global KEYWORD_FOUND
+def evaluateKeyword(curArg, keyword, linenum, keywordValue, keywordFound):
 	if(curArg == keyword):
-		KEYWORD_FOUND = True
+		keywordFound = True
 		vprint("Line "+str(linenum)+": Keyword found ---> "+keyword)
-		return keywordValue
+		return keywordValue, keywordFound
 	else:
-		return curArg
+		return curArg, keywordFound
 
 # function to calculate offset of current line number
 # relative to a label's line number
@@ -492,6 +485,7 @@ def intToBin(argi, curLine):
 	# if still not found return error
 	if(not argiFound):
 		print("\n*\t*\t*\t*\t*\nError! Integer out of bounds (-8 <= x <= 15) : "+str(argi)+"\nFound on line -> "+str(curLine))
+		exit(1)
 	
 	# else return the found value
 	return argi
