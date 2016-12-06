@@ -1,0 +1,392 @@
+<!DOCTYPE html>
+<html>
+
+  <head>
+    <meta charset='utf-8'>
+    <meta http-equiv="X-UA-Compatible" content="chrome=1">
+    <meta name="description" content="Hummuslite : A CPU made in Minecraft. Uses an assembly language I wrote called HummusLite.">
+
+    <link rel="stylesheet" type="text/css" media="screen" href="stylesheets/stylesheet.css">
+
+    <title>Hummuslite</title>
+  </head>
+
+  <body>
+
+    <!-- HEADER -->
+    <div id="header_wrap" class="outer">
+        <header class="inner">
+          <a id="forkme_banner" href="https://github.com/zAMLz/HummusLite">View on GitHub</a>
+
+          <h1 id="project_title">Hummuslite</h1>
+          <h2 id="project_tagline">A CPU made in Minecraft. Uses an assembly language I wrote called HummusLite.</h2>
+
+            <section id="downloads">
+              <a class="zip_download_link" href="https://github.com/zAMLz/HummusLite/zipball/master">Download this project as a .zip file</a>
+              <a class="tar_download_link" href="https://github.com/zAMLz/HummusLite/tarball/master">Download this project as a tar.gz file</a>
+            </section>
+        </header>
+    </div>
+
+    <!-- MAIN CONTENT -->
+    <div id="main_content_wrap" class="outer">
+      <section id="main_content" class="inner">
+        <h1>
+<a id="hummuslite" class="anchor" href="#hummuslite" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a>HummusLite</h1>
+
+<p>The Goal is to build a functional CPU in minecraft that interprets an assembly code that I wrote called HummusLite. I chose to do this in minecraft cause why not. The name Hummus stuck because me and my friends watched <a href="https://www.youtube.com/watch?v=_QdPW8JrYzQ">this video.</a> Since then, the name kinda stuck.</p>
+
+<p><img src="https://raw.githubusercontent.com/zAMLz/HummusLite/master/pictures/overview.png" alt="alt text" title="Here is a picture lol"></p>
+
+<h4>
+<a id="todo-list" class="anchor" href="#todo-list" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a>TODO List</h4>
+
+<ul>
+<li>[ ] add more user display info...</li>
+</ul>
+
+<h1>
+<a id="system-registers" class="anchor" href="#system-registers" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a>System Registers</h1>
+
+<table>
+<thead>
+<tr>
+<th>ID</th>
+<th>Name</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>PC</td>
+<td>Program Counter</td>
+<td>Location of Current Instruction</td>
+</tr>
+<tr>
+<td>B1</td>
+<td>Register B1</td>
+<td>One of the two main registers</td>
+</tr>
+<tr>
+<td>B2</td>
+<td>Register B2</td>
+<td>One of the two main registers</td>
+</tr>
+<tr>
+<td>RS</td>
+<td>Result Register</td>
+<td>Stores the Current Result</td>
+</tr>
+</tbody>
+</table>
+
+<h1>
+<a id="instruction-set" class="anchor" href="#instruction-set" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a>Instruction Set</h1>
+
+<p><em>[4-bit OPCODE] [4-bit Argument]</em></p>
+
+<table>
+<thead>
+<tr>
+<th>OPCODE</th>
+<th>ARGS</th>
+<th>Instruction</th>
+<th>Psuedo-Code</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>0000</td>
+<td>----</td>
+<td>HALT</td>
+<td>end()</td>
+<td>Ends the Program.</td>
+</tr>
+<tr>
+<td>0001</td>
+<td>xxxx</td>
+<td>SHFF</td>
+<td>PC = PC + 0b0000_xxxx</td>
+<td>Moves the Program Counter Forward.</td>
+</tr>
+<tr>
+<td>0010</td>
+<td>xxxx</td>
+<td>SHFB</td>
+<td>PC = PC - 0b0000_xxxx</td>
+<td>Moves the Program Counter Backward.</td>
+</tr>
+<tr>
+<td>0011</td>
+<td>zxxx</td>
+<td>BNR</td>
+<td>if(RS): PC = PC + 0bzzzz_zxxx</td>
+<td>If result is not zero, add a two's compliment number to the Program Counter, else do nothing.</td>
+</tr>
+<tr>
+<td>0100</td>
+<td>yyyy</td>
+<td>INP</td>
+<td>B(2/1) = userInput()</td>
+<td>If the ARGS are non-zero, get user input and store it in register B2, else store it in register B1.</td>
+</tr>
+<tr>
+<td>0101</td>
+<td>yyyy</td>
+<td>STR</td>
+<td>B(2/1) = RS</td>
+<td>If the ARGS are non-zero, store the value of register RS into B2, else store it in B1.</td>
+</tr>
+<tr>
+<td>0110</td>
+<td>mmmm</td>
+<td>LDB1</td>
+<td>B1 = Mem[0bmmmm]</td>
+<td>Take byte from location 0bmmmm in memory and store it into register B1.</td>
+</tr>
+<tr>
+<td>0111</td>
+<td>mmmm</td>
+<td>LDB2</td>
+<td>B2 = Mem[0bmmmm]</td>
+<td>Take byte from location 0bmmmm in memory and store it into register B2.</td>
+</tr>
+<tr>
+<td>1000</td>
+<td>xxxx</td>
+<td>ADDB1</td>
+<td>RS = B1 + 0bxxxx</td>
+<td>Add 0bxxxx to the value in B1 and store it in RS.</td>
+</tr>
+<tr>
+<td>1001</td>
+<td>xxxx</td>
+<td>ADDB2</td>
+<td>RS = B2 + 0bxxxx</td>
+<td>Add 0bxxxx to the value in B2 and store it in RS.</td>
+</tr>
+<tr>
+<td>1010</td>
+<td>cccc</td>
+<td>BOOL</td>
+<td>RS = Bool(0bcccc)</td>
+<td>The behaviour of Bool is described below.</td>
+</tr>
+<tr>
+<td>1011</td>
+<td>--cc</td>
+<td>ADD</td>
+<td>RS = Add(0b00cc)</td>
+<td>The behaviour of Add is described below.</td>
+</tr>
+<tr>
+<td>1100</td>
+<td>xxxx</td>
+<td>SUBB1</td>
+<td>RS = B1 - 0bxxxx</td>
+<td>Subtract 0bxxxx from the value in register B1 and store it in RS.</td>
+</tr>
+<tr>
+<td>1101</td>
+<td>xxxx</td>
+<td>SUBB2</td>
+<td>RS = B2 - 0bxxxx</td>
+<td>Subtract 0bxxxx from the value in register B2 and store it in RS.</td>
+</tr>
+<tr>
+<td>1110</td>
+<td>mmmm</td>
+<td>STM</td>
+<td>Mem[0bmmmm] = RS</td>
+<td>Store result into location 0bmmmm in memory.</td>
+</tr>
+<tr>
+<td>1111</td>
+<td>----</td>
+<td>MEMC</td>
+<td>memoryClear()</td>
+<td>Clear the Main Memory.</td>
+</tr>
+</tbody>
+</table>
+
+<h4>
+<a id="behaviour-of-bool" class="anchor" href="#behaviour-of-bool" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a>Behaviour of BOOL</h4>
+
+<p>The instruction BOOL performs a boolean or a logical operation based on the current value of ARGS. Hence it can do 16 different boolean operations. Here is the list.</p>
+
+<table>
+<thead>
+<tr>
+<th>ARGS</th>
+<th>Psuedo-Code</th>
+<th>Description</th>
+<th>Keyword</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>0000</td>
+<td>RS = B1 &amp; B2</td>
+<td>Bitwise AND</td>
+<td>BAND</td>
+</tr>
+<tr>
+<td>0001</td>
+<td>RS = B1 &amp;&amp; B2</td>
+<td>Logical AND</td>
+<td>LAND</td>
+</tr>
+<tr>
+<td>0010</td>
+<td>RS = B1 | B2</td>
+<td>Bitwise OR</td>
+<td>BOR</td>
+</tr>
+<tr>
+<td>0011</td>
+<td>RS = B1 || B2</td>
+<td>Logical OR</td>
+<td>LOR</td>
+</tr>
+<tr>
+<td>0100</td>
+<td>RS = B1 ^ B2</td>
+<td>Bitwise XOR</td>
+<td>BXOR</td>
+</tr>
+<tr>
+<td>0101</td>
+<td>RS = B1 ~^ B2</td>
+<td>Bitwise XNOR</td>
+<td>BXNOR</td>
+</tr>
+<tr>
+<td>0110</td>
+<td>RS = B1 &lt;&lt; 1</td>
+<td>Left Shift on B1</td>
+<td>LB1</td>
+</tr>
+<tr>
+<td>0111</td>
+<td>RS = B2 &lt;&lt; 1</td>
+<td>Left Shift on B2</td>
+<td>LB2</td>
+</tr>
+<tr>
+<td>1000</td>
+<td>RS = ~(B1 &amp; B2)</td>
+<td>Bitwise NAND</td>
+<td>BNAND</td>
+</tr>
+<tr>
+<td>1001</td>
+<td>RS = !(B1 &amp;&amp; B2)</td>
+<td>Logical NAND</td>
+<td>LNAND</td>
+</tr>
+<tr>
+<td>1010</td>
+<td>RS = ~(B1 | B2)</td>
+<td>Bitwise NOR</td>
+<td>BNOR</td>
+</tr>
+<tr>
+<td>1011</td>
+<td>RS = !(B1 || B2)</td>
+<td>Logical NOR</td>
+<td>LNOR</td>
+</tr>
+<tr>
+<td>1100</td>
+<td>RS = ~B1</td>
+<td>Bitwise NOT on B1</td>
+<td>NB1</td>
+</tr>
+<tr>
+<td>1101</td>
+<td>RS = ~B2</td>
+<td>Bitwise NOT on B2</td>
+<td>NB2</td>
+</tr>
+<tr>
+<td>1110</td>
+<td>RS = B1 &gt;&gt; 1</td>
+<td>Right Shift on B1</td>
+<td>RB1</td>
+</tr>
+<tr>
+<td>1111</td>
+<td>RS = B2 &gt;&gt; 1</td>
+<td>Right Shift on B2</td>
+<td>RB2</td>
+</tr>
+</tbody>
+</table>
+
+<h4>
+<a id="behaviour-of-add" class="anchor" href="#behaviour-of-add" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a>Behaviour of ADD</h4>
+
+<p>The instruction ADD simply adds register B1 and B2 in four different ways. Based on the ARGS value, it decides whether it should negate a register or two. Here is the list.</p>
+
+<table>
+<thead>
+<tr>
+<th>ARGS</th>
+<th>Psuedo-Code</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>00</td>
+<td>RS = B1 + B2</td>
+<td>Add B1 and B2</td>
+</tr>
+<tr>
+<td>01</td>
+<td>RS = B1 + (-B2)</td>
+<td>Add B1 and -B2</td>
+</tr>
+<tr>
+<td>10</td>
+<td>RS = (-B1) + B2</td>
+<td>Add -B1 and B2</td>
+</tr>
+<tr>
+<td>11</td>
+<td>RS = (-B1) + (-B2)</td>
+<td>Add -B1 and -B2</td>
+</tr>
+</tbody>
+</table>
+
+<h1>
+<a id="writing-your-own-assembly" class="anchor" href="#writing-your-own-assembly" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a>Writing your own assembly</h1>
+
+<p>So you want to test this out and write your own code? Well testing it out on minecraft would be hassle to debug and input into minecraft. So to aid with that, there is a python program in the hlite folder just for that purpose. Use the following command to learn how to use hlite.py. 
+'''
+python hlite.py --help
+'''</p>
+
+<h1>
+<a id="system-design" class="anchor" href="#system-design" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a>System Design</h1>
+
+<p>You don't need this to start programming the system but it is useful information to see how the system works.
+USEFUL INFO HERE</p>
+      </section>
+    </div>
+
+    <!-- FOOTER  -->
+    <div id="footer_wrap" class="outer">
+      <footer class="inner">
+        <p class="copyright">Hummuslite maintained by <a href="https://github.com/zAMLz">zAMLz</a></p>
+        <p>Published with <a href="https://pages.github.com">GitHub Pages</a></p>
+      </footer>
+    </div>
+
+    
+
+  </body>
+</html>
