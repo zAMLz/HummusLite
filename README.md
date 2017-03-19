@@ -37,7 +37,7 @@ OPCODE | ARGS | Instruction | Psuedo-Code | Description
 1100 | xxxx | SUBB1 | RS = B1 - 0bxxxx | Subtract 0bxxxx from the value in register B1 and store it in RS.
 1101 | xxxx | SUBB2 | RS = B2 - 0bxxxx | Subtract 0bxxxx from the value in register B2 and store it in RS.
 1110 | mmmm | STM | Mem[0bmmmm] = RS | Store result into location 0bmmmm in memory.
-1111 | ---- | MEMC | memoryClear() | Clear the Main Memory.
+1111 | xxxx | MEM | memoryManage(0bxxxx) | Perform Various Memory Management Operations.
 
 #### Behaviour of BOOL
 The instruction BOOL performs a boolean or a logical operation based on the current value of ARGS. Hence it can do 16 different boolean operations. Here is the list.
